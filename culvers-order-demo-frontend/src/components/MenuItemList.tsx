@@ -36,4 +36,5 @@ const MenuItemList: React.FC<MenuItemListProps> = ({ onItemAddedToCart }) => {
   );
 };
 
-export default MenuItemList; 
+export default MenuItemList;
+
