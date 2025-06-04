@@ -1,7 +1,7 @@
 {
     "bindings": [
       {
-        "authLevel": "function", 
+        "authLevel": "anonymous",
         "type": "httpTrigger",
         "direction": "in",
         "name": "req",
@@ -17,5 +17,6 @@
         "name": "res"
       }
     ],
-    "scriptFile": "../dist/GraphQLHttpTrigger/index.js"
+    "scriptFile": "../dist/GraphQLHttpTrigger/index.js",
+    "entryPoint": "graphqlHandler"
   }

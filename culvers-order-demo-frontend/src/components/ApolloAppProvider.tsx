@@ -12,4 +12,5 @@ const ApolloAppProvider: React.FC<ApolloAppProviderProps> = ({ children }) => {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
-export default ApolloAppProvider; 
+export default ApolloAppProvider;
+
