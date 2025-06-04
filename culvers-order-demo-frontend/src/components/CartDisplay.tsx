@@ -32,4 +32,5 @@ const CartDisplay: React.FC<CartDisplayProps> = ({ cartItems, userName }) => {
   );
 };
 
-export default CartDisplay; 
+export default CartDisplay;
+

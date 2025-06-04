@@ -20,7 +20,11 @@ const MenuItemList: React.FC<MenuItemListProps> = ({ onItemAddedToCart }) => {
   const { loading, error, data } = useQuery(GET_MENU_ITEMS);
 
   if (loading) return <p className="text-center py-4">Loading menu...</p>;
-  if (error) return <p className="text-center py-4 text-red-500">Error loading menu: {error.message}</p>;
+  if (error) {
+    const msg = (error.networkError ? 'Network error: ' : '') + error.message;
+    console.error('Menu query error:', JSON.stringify(error, null, 2));
+    return <p className="text-center py-4 text-red-500">Error loading menu: {msg}</p>;
+  }
 
   return (
     <div className="menu-item-list">
@@ -36,4 +40,5 @@ const MenuItemList: React.FC<MenuItemListProps> = ({ onItemAddedToCart }) => {
   );
 };
 
-export default MenuItemList; 
+export default MenuItemList;
+

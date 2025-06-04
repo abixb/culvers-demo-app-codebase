@@ -33,4 +33,4 @@
 
     // Export the pool promise and the sql object itself for convenience
     export { poolPromise, sql };
-    
+

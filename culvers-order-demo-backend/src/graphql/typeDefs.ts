@@ -30,4 +30,3 @@
         attemptAddToCart(itemId: ID!): CartItemResponse!
       }
     `;
-    
