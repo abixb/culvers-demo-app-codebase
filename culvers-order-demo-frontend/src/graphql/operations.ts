@@ -19,8 +19,9 @@ export const ATTEMPT_ADD_TO_CART_MUTATION = gql`
       menuItem {
         id
         name
-        stock # Important to get updated stock
+        stock
       }
     }
   }
-`; 
+`;
+
