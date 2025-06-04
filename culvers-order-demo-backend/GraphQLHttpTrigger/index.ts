@@ -7,7 +7,7 @@ import { poolPromise } from '../src/utils/db';      // Only importing poolPromis
 // Create an instance of ApolloServer
 const server = new ApolloServer({
   typeDefs,
-  resolvers, // This still needs to be of a type compatible with what ApolloServer expects.
+  resolvers, // This still needs to be of a type compatile with what ApolloServer expects.
              // The error you saw might persist if the 'Resolvers' type from resolvers.ts
              // isn't compatible with ApolloServer's expected IResolvers type.
              // We'll address that in resolvers.ts if needed.

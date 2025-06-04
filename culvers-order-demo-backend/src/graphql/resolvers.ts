@@ -1,13 +1,16 @@
 // src/graphql/resolvers.ts
 import { poolPromise, sql } from '../utils/db';
-import { ApolloError } from 'apollo-server-azure-functions'; // ApolloError should be available
+import { ApolloError } from 'apollo-server-azure-functions';
 
-// Define an interface for the context object passed to resolvers
+// Updated ResolverContext:
+// Since index.ts now simplifies the context and our resolvers get poolPromise directly from db.ts,
+// this context might just contain the 'req' object or be minimal if 'req' isn't used by these resolvers.
+// For now, let's define it to potentially hold the request object, making it optional.
 interface ResolverContext {
-  dbPool: sql.ConnectionPool;
+  req?: any; // The request object from Azure Functions via Apollo context, if needed
 }
 
-// Define the structure of arguments for mutations/queries
+// Argument types (remain the same)
 interface AttemptAddToCartArgs {
   itemId: string;
 }
@@ -16,7 +19,7 @@ interface GetMenuItemArgs {
   id: string;
 }
 
-// Define the structure of your MenuItem as returned by the database
+// Database result type (remains the same)
 interface MenuItemFromDB {
   id: string;
   name: string;
@@ -24,15 +27,15 @@ interface MenuItemFromDB {
   stock: number;
 }
 
-// Define the structure for our CartItemResponse type
+// Mutation response type (remains the same)
 interface CartItemResponse {
   success: boolean;
   message: string;
   menuItem: MenuItemFromDB | null;
 }
 
-// Define a more specific type for our Resolvers map
-// The `info` argument is also available but often not used in simple resolvers.
+// Revised Resolvers interface to be compatible with Apollo Server
+// by adding an index signature.
 interface Resolvers {
   Query: {
     menuItems: (parent: any, args: any, context: ResolverContext, info: any) => Promise<MenuItemFromDB[]>;
@@ -41,16 +44,16 @@ interface Resolvers {
   Mutation: {
     attemptAddToCart: (parent: any, args: AttemptAddToCartArgs, context: ResolverContext, info: any) => Promise<CartItemResponse>;
   };
-  // If you had resolvers for fields within MenuItem (e.g., a computed field), you'd add them here:
-  // MenuItem?: {
-  //   fieldName: (parent: MenuItemFromDB, args: any, context: ResolverContext, info: any) => any;
-  // };
+  // Adding an index signature allows for other properties Apollo Server might expect
+  // or for additional resolver types (e.g., for custom scalars or field resolvers on types)
+  [key: string]: any;
 }
 
 
 const resolvers: Resolvers = {
   Query: {
-    menuItems: async (_parent, _args, context) => { // _parent and _args can be any if not used
+    menuItems: async (_parent, _args, context) => {
+      // Accessing dbPool directly from the imported poolPromise
       try {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT id, name, description, stock FROM MenuItems');
@@ -61,6 +64,7 @@ const resolvers: Resolvers = {
       }
     },
     menuItem: async (_parent, args: GetMenuItemArgs, context) => {
+      // Accessing dbPool directly from the imported poolPromise
       try {
         const pool = await poolPromise;
         const result = await pool.request()
@@ -79,6 +83,7 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     attemptAddToCart: async (_parent, args: AttemptAddToCartArgs, context) => {
+      // Accessing dbPool directly from the imported poolPromise
       const { itemId } = args;
       const pool = await poolPromise;
       let transaction: sql.Transaction | undefined; 
