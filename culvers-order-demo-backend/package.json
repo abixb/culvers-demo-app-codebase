@@ -1,6 +1,7 @@
 {
   "name": "culvers-order-demo-backend",
   "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,10 +13,5 @@
     "@types/mssql": "^9.1.7",
     "@types/node": "^22.15.29",
     "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "apollo-server-azure-functions": "^3.13.0",
-    "graphql": "^16.11.0",
-    "mssql": "^11.0.1"
   }
 }
