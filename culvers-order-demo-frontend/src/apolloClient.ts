@@ -6,6 +6,7 @@ const GRAPHQL_ENDPOINT = 'http://localhost:7071/api/graphql';
 
 const httpLink = new HttpLink({
   uri: GRAPHQL_ENDPOINT,
+  fetchOptions: { method: 'POST' },
 });
 
 export const client = new ApolloClient({
