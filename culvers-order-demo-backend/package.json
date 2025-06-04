@@ -1,7 +1,6 @@
 {
   "name": "culvers-order-demo-backend",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start": "func start",
