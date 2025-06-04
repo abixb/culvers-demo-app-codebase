@@ -42,7 +42,7 @@ export default function HomePage() {
   return (
     <main className="App container mx-auto p-4">
       <header className="App-header mb-8">
-        <h1 className="text-3xl font-bold">The Last Piece - Culver's Demo</h1>
+        <h1 className="text-3xl font-bold">The Last Piece - Demo App by Abi</h1>
       </header>
 
       <div className="text-center mb-6">

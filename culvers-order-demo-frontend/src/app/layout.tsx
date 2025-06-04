@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Culver's Order Demo",
-  description: "Demo for Culver's ordering system",
+  title: "Restaurant Order Demo",
+  description: "Demo app for an ordering system",
 };
 
 export default function RootLayout({
