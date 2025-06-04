@@ -53,18 +53,27 @@ interface Resolvers {
 const resolvers: Resolvers = {
   Query: {
     menuItems: async (_parent, _args, context) => {
-      // Accessing dbPool directly from the imported poolPromise
       try {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT id, name, description, stock FROM MenuItems');
-        return result.recordset as MenuItemFromDB[];
+        
+        if (result && result.recordset) {
+          // Explicitly create a new plain array of plain objects
+          const plainData = JSON.parse(JSON.stringify(result.recordset));
+          return plainData as MenuItemFromDB[];
+        } else {
+          console.error('[RESOLVER] menuItems: Query executed but result.recordset is undefined or null.'); 
+          throw new ApolloError('Failed to process database response for menu items.', 'DATABASE_PROCESSING_ERROR');
+        }
       } catch (err: any) {
-        console.error('Error fetching menu items:', err.message);
-        throw new ApolloError('Failed to fetch menu items.', 'DATABASE_QUERY_ERROR');
+        console.error('[RESOLVER] menuItems: Error! Message:', err.message, 'Stack:', err.stack);
+        if (err instanceof ApolloError) {
+            throw err;
+        }
+        throw new ApolloError('Failed to fetch menu items due to an internal error.', 'INTERNAL_SERVER_ERROR');
       }
     },
     menuItem: async (_parent, args: GetMenuItemArgs, context) => {
-      // Accessing dbPool directly from the imported poolPromise
       try {
         const pool = await poolPromise;
         const result = await pool.request()
@@ -72,7 +81,9 @@ const resolvers: Resolvers = {
           .query('SELECT id, name, description, stock FROM MenuItems WHERE id = @itemId');
         
         if (result.recordset.length > 0) {
-          return result.recordset[0] as MenuItemFromDB;
+           // Explicitly create a new plain object
+          const plainItem = JSON.parse(JSON.stringify(result.recordset[0]));
+          return plainItem as MenuItemFromDB;
         }
         return null; 
       } catch (err: any) {
@@ -83,7 +94,6 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     attemptAddToCart: async (_parent, args: AttemptAddToCartArgs, context) => {
-      // Accessing dbPool directly from the imported poolPromise
       const { itemId } = args;
       const pool = await poolPromise;
       let transaction: sql.Transaction | undefined; 
@@ -95,7 +105,6 @@ const resolvers: Resolvers = {
 
         transaction = new sql.Transaction(pool);
         await transaction.begin();
-        console.log(`Transaction started for item ID: ${itemId}`);
 
         const stockCheckResult = await transaction.request()
           .input('itemId', sql.VarChar(50), itemId)
@@ -103,13 +112,11 @@ const resolvers: Resolvers = {
 
         if (stockCheckResult.recordset.length === 0) {
           await transaction.rollback();
-          console.log(`Item ${itemId} not found. Transaction rolled back.`);
           return { success: false, message: `Item with ID ${itemId} not found.`, menuItem: null };
         }
 
         const currentItemData = stockCheckResult.recordset[0] as Omit<MenuItemFromDB, 'id'>;
         const currentStock = currentItemData.stock;
-        console.log(`Current stock for ${itemId}: ${currentStock}`);
 
         if (currentStock > 0) {
           const updateResult = await transaction.request()
@@ -119,28 +126,29 @@ const resolvers: Resolvers = {
           if (updateResult.rowsAffected[0] > 0) {
             await transaction.commit();
             const updatedStock = currentStock - 1;
-            console.log(`Stock for item ${itemId} decremented to ${updatedStock}. Transaction committed.`);
+            // Ensure returned menuItem is also plain
+            const plainMenuItem = JSON.parse(JSON.stringify({ id: itemId, ...currentItemData, stock: updatedStock }));
             return {
               success: true,
               message: `${currentItemData.name} added to cart!`,
-              menuItem: { id: itemId, ...currentItemData, stock: updatedStock },
+              menuItem: plainMenuItem,
             };
           } else {
             await transaction.rollback();
-            console.log(`Failed to decrement stock for ${itemId} (rowsAffected was 0), likely became 0 concurrently. Transaction rolled back.`);
+            const plainMenuItem = JSON.parse(JSON.stringify({ id: itemId, ...currentItemData, stock: currentStock }));
             return {
               success: false,
               message: `${currentItemData.name} just went out of stock!`,
-              menuItem: { id: itemId, ...currentItemData, stock: currentStock }, 
+              menuItem: plainMenuItem, 
             };
           }
         } else {
           await transaction.rollback();
-          console.log(`Item ${itemId} is already out of stock (stock: ${currentStock}). Transaction rolled back.`);
+          const plainMenuItem = JSON.parse(JSON.stringify({ id: itemId, ...currentItemData, stock: currentStock }));
           return {
             success: false,
             message: `${currentItemData.name} is out of stock.`,
-            menuItem: { id: itemId, ...currentItemData, stock: currentStock },
+            menuItem: plainMenuItem,
           };
         }
       } catch (err: any) { 
@@ -148,7 +156,6 @@ const resolvers: Resolvers = {
         if (transaction && (transaction as any)._active) { 
           try {
             await transaction.rollback();
-            console.log("Transaction rolled back due to error.");
           } catch (rollbackErr: any) {
             console.error("Error rolling back transaction:", rollbackErr.message);
           }

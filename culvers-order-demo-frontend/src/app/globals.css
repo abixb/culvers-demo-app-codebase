@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Added custom styles from original App.css */
+.App-header {
+  background-color: #005696; /* Culver's Blue */
+  padding: 20px; /* This will be overridden by Tailwind p-4 in page.tsx header if not specific enough, but good as a base */
+  color: white;
+}
+
+.menu-item-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.menu-item-card {
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Or use Tailwind rounded-lg if .menu-item-card class is removed from JSX */
+  padding: 15px; /* Or use Tailwind p-4 if .menu-item-card class is removed from JSX */
+  width: 250px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  /* Opacity and other specific stylings are handled inline or with Tailwind in MenuItemCard.tsx */
+}
+
+.messages {
+  /* Tailwind classes like max-w-2xl, mx-auto, p-4, border, rounded-lg are used in page.tsx */
+  /* This provides a fallback if those classes were missed or for additional styling */
+  border: 1px solid #eee; 
+  border-radius: 8px;
+  text-align: left; 
+}
+
+.cart-display {
+  /* Tailwind classes like p-4, border, rounded-lg are used on the div in CartDisplay.tsx */
+  /* This provides a fallback or base for width */
+  border: 1px solid lightblue; 
+  border-radius: 8px;
+  width: 40%; /* Consider using Tailwind width classes (e.g., md:w-2/5) in page.tsx for responsiveness */
+  min-width: 280px; /* Added for better display on smaller cart content */
+}

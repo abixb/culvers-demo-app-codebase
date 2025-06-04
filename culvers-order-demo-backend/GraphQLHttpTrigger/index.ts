@@ -1,5 +1,6 @@
 // GraphQLHttpTrigger/index.ts
 import { ApolloServer } from 'apollo-server-azure-functions';
+import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { typeDefs } from '../src/graphql/typeDefs'; // Path should be correct if src is at root of compiled output
 import resolvers from '../src/graphql/resolvers';   // Path should be correct
 import { poolPromise } from '../src/utils/db';      // Only importing poolPromise as sql object is used within db.ts or resolvers
@@ -37,6 +38,10 @@ const server = new ApolloServer({
   introspection: process.env.NODE_ENV !== 'production',
   // For Apollo Server v3+, the playground (Apollo Sandbox) is typically enabled by default
   // if introspection is true.
+  // Explicitly add the landing page plugin for robustness
+  plugins: [
+    ApolloServerPluginLandingPageLocalDefault({ embed: true })
+  ],
 });
 
 // Export the handler for the Azure Function runtime
