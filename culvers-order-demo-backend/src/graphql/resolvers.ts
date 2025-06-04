@@ -169,4 +169,4 @@ const resolvers: Resolvers = {
   },
 };
 
-export default resolvers; // export the resolvers
+export default resolvers;
