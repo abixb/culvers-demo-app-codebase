@@ -1,6 +1,8 @@
-# This is a 'demo' restaurant project, for my interview.
+# This is a 'demo' restaurant project, for my interview prep. (Abi)
 
-This repository contains a demo Azure Functions backend (`culvers-order-demo-backend`) and a Next.js frontend (`culvers-order-demo-frontend`).
+Hi, I'm Abi. This project was created with Node.js, GraphQL, Microsoft SQL (Azure SQL), Next.js and Apollo Client/Server (for GraphQL). Code editor used was Visual Studio, though I made extensive use of Cursor AI (an AI-powered code editor build on top of VS Code) for building out the frontend -- for massive efficiency gains.
+
+It contains a demo Azure Functions backend (`culvers-order-demo-backend`) and a Next.js frontend (`culvers-order-demo-frontend`).
 
 ## Requirements
 
