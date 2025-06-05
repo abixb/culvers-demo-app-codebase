@@ -2,7 +2,9 @@
 
 Hi, I'm Abi. This project was created with Node.js, GraphQL, Microsoft SQL (Azure SQL), Next.js and Apollo Client/Server (for GraphQL). Code editor used was Visual Studio, though I made extensive use of Cursor AI (an AI-powered code editor build on top of VS Code) for building out the frontend -- for massive efficiency gains.
 
-It contains a demo Azure Functions backend (`culvers-order-demo-backend`) and a Next.js frontend (`culvers-order-demo-frontend`).
+I also made use of OpenAI's cutting-edge "Codex" AI agent for some of the work flows, including API integration and cleaning up unneeded packages in package-lock.json.
+
+The structure contains a demo Azure Functions backend (`culvers-order-demo-backend`) and a Next.js frontend (`culvers-order-demo-frontend`).
 
 ## Requirements
 
@@ -17,7 +19,7 @@ Navigate to the package you want to run (e.g. `culvers-order-demo-backend`) and 
 npm install
 npm run build
 npm test
-npm start
+npm start (or func start)
 ```
 
 `npm start` launches the Azure Functions runtime locally.
